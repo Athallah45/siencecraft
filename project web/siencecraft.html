@@ -1,0 +1,78 @@
+
+<!-- SienceCraft by Atha -->
+<!-- Frontend dengan HTML + Tailwind + JS, nanti bisa dihubungkan ke backend untuk upload dinamis -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SienceCraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #ffffff, #cce4ff);
+    }
+  </style>
+</head>
+<body class="min-h-screen font-sans text-gray-800">
+  <header class="text-center py-6 shadow-md bg-white/80 backdrop-blur-sm">
+    <h1 class="text-4xl font-bold text-blue-600">SienceCraft</h1>
+    <p class="text-sm text-gray-500">Eksperimen dan Kerajinan Sains Karya Atha</p>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+    <!-- Upload Form -->
+    <section class="mb-10 bg-white p-6 rounded-2xl shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">Upload Karyamu</h2>
+      <form id="uploadForm" class="space-y-4">
+        <input type="text" placeholder="Judul eksperimen" class="w-full p-3 border rounded-xl" required>
+        <textarea placeholder="Deskripsi singkat" class="w-full p-3 border rounded-xl" rows="4" required></textarea>
+        <select class="w-full p-3 border rounded-xl" required>
+          <option value="">Pilih kategori</option>
+          <option value="Filter Air">Filter Air</option>
+          <option value="Listrik">Listrik</option>
+          <option value="Kimia">Kimia</option>
+        </select>
+        <input type="file" accept="image/*,video/*" class="w-full" required>
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700">Upload</button>
+      </form>
+    </section>
+
+    <!-- Gallery Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Galeri Karya</h2>
+      <div id="gallery" class="grid gap-4 grid-cols-1 md:grid-cols-2"></div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const gallery = document.getElementById('gallery');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = form.querySelector('input[type="text"]').value;
+      const desc = form.querySelector('textarea').value;
+      const file = form.querySelector('input[type="file"]').files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const item = document.createElement('div');
+        item.className = 'bg-white p-4 rounded-xl shadow-md';
+        item.innerHTML = `
+          <h3 class="text-lg font-semibold">${title}</h3>
+          <p class="text-sm text-gray-500 mb-2">${desc}</p>
+          ${file.type.startsWith('image') ? `<img src="${event.target.result}" class="w-full rounded-xl"/>` :
+            `<video controls class="w-full rounded-xl"><source src="${event.target.result}" type="${file.type}"></video>`}
+        `;
+        gallery.prepend(item);
+        form.reset();
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
